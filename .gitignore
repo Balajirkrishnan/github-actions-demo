@@ -47,3 +47,14 @@ cache/
 
 # Terraform directory
 .terraform/
+
+# Ignore the virtual environment
+venv/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Various Python files
+*.env
