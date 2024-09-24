@@ -4,7 +4,7 @@ on:
     workflow_dispatch:
 
 jobs:
-    generate-random-number:
+    random-number-generator:
         runs-on: ubuntu-latest
         outputs:
             number: ${{ steps.generate-number.outputs.number }}
