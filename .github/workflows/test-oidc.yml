@@ -1,0 +1,24 @@
+name: OIDC Test Workflow
+
+on:
+  workflow_dispatch:  
+
+jobs:
+  test-oidc-connection:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  
+      contents: read   
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials from OIDC
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: arn:aws:iam::948853910530:role/GitHubActionsOIDCRole
+          aws-region: us-east-1
+
+      - name: Test AWS S3 Access
+        run: aws s3 ls
