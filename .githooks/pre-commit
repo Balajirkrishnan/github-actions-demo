@@ -1,0 +1,15 @@
+#!/bin/bash
+# Pre-commit hook to check Python syntax
+echo "Running pre-commit hook..."
+
+# Check Python files for syntax errors
+for file in $(git diff --cached --name-only | grep '\.py$')
+do
+    python -m py_compile "$file"
+    if [ $? -ne 0 ]; then
+        echo "Syntax error in $file. Aborting commit."
+        exit 1
+    fi
+done
+
+echo "All Python files passed syntax check."
