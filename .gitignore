@@ -58,3 +58,12 @@ __pycache__/
 
 # Various Python files
 *.env
+
+#Terraform
+.history
+**/.DS_Store
+
+backend.tf
+provider.tf
+**/.terragrunt-cache*
+**/.terraform

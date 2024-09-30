@@ -1,8 +1,8 @@
 resource "aws_s3_bucket" "terragrunt_test" {
-  bucket = "terragrunt-lab-bucket_brk"
+  bucket = "terragrunt-lab-bucket-brk"
 
   tags = {
-    Name        = "My bucket"
+    Name        = "Mybucket"
     Environment = "Dev"
   }
 }
