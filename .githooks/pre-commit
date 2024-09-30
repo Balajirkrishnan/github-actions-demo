@@ -1,15 +1,46 @@
 #!/bin/bash
-# Pre-commit hook to check Python syntax
-echo "Running pre-commit hook..."
+source .image
 
-# Check Python files for syntax errors
-for file in $(git diff --cached --name-only | grep '\.py$')
-do
-    python -m py_compile "$file"
-    if [ $? -ne 0 ]; then
-        echo "Syntax error in $file. Aborting commit."
-        exit 1
-    fi
-done
+docker images |grep "$IMAGE" &>/dev/null
+IMAGE_EXISTS=$?
 
-echo "All Python files passed syntax check."
+if [[ $IMAGE_EXISTS -ne 0 ]]; then
+    docker pull "$IMAGE"
+fi
+
+repo_root=$(git rev-parse --show-toplevel)
+cd "${repo_root}" ||exit
+
+docker ps -a |grep "$IMAGE" $> /dev/null
+CONTAINER_EXISTS=$?
+
+if [[ $CONTAINER_EXISTS -ne 0 ]]; then
+    if [ -z $AWS_DEFAULT_REGION ] && [ -z $AWS_REGION] && [-z $AWS_ACCESS_KEY_ID] && [ -z $AWS_SECRET_ACCESS_KEY ] && [ -z $AWS_SESSION_TOKEN] ;then
+
+        docker run --rm \
+            -v "${repo_root}":"${repo_root}" \
+            -v "$HOME"/.ssh/root/.ssh:ro \
+            -v "$HOME"/.cache/pre-commit:/root/.cache/pre-commit \
+            -v "$HOME"/.terraform.d/plugin-cache:/root/.terraform.d/plugin-cache \
+            -v "$HOME"/.aws:/root/.aws:rw \
+            -w "${repo_root}" \
+            -e "TF_PLUGIN_CACHE_DIR="/root/.terraform.d/plugin-cache" \
+            --entrypoint .githooks/pre-commit.installed \
+            "$IMAGE"
+
+    else
+        docker run --rm \
+            -v "${repo_root}":"${repo_root}" \
+            -v "$HOME"/.ssh/root/.ssh:ro \
+            -v "$HOME"/.cache/pre-commit:/root/.cache/pre-commit \
+            -v "$HOME"/.terraform.d/plugin-cache:/root/.terraform.d/plugin-cache \
+            -v "$HOME"/.aws:/root/.aws:rw \
+            -w "${repo_root}" \
+            -e "TF_PLUGIN_CACHE_DIR="/root/.terraform.d/plugin-cache" \
+            -e AWS_DEFAULT_REGION="$AWS_DEFAULT_REGION" \
+            -e AWS_REGION="$AWS_REGION" \
+            -e AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID" \
+            -e AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY" \
+            -e AWS_SESSION_TOKEN="$AWS_SESSION_TOKEN" \
+            -- entrypoint .githooks/pre-commit.installed \
+            "$IMAGE"

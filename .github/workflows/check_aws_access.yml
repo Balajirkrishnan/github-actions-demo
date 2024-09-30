@@ -1,6 +1,6 @@
 name: Check AWS Access
 
-on: 
+on:
     workflow_dispatch:
 
 jobs:

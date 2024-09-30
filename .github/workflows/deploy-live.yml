@@ -3,8 +3,8 @@ name: Production deployment
 on:
     push:
       branches:
-        - main  
-  
+        - main
+
 jobs:
     live-job:
       environment: Live
