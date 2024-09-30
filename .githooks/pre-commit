@@ -44,3 +44,13 @@ if [[ $CONTAINER_EXISTS -ne 0 ]]; then
             -e AWS_SESSION_TOKEN="$AWS_SESSION_TOKEN" \
             -- entrypoint .githooks/pre-commit.installed \
             "$IMAGE"
+    fi
+else
+    echo "Please exit the running container before running pre-commit"
+    exit 1
+fi
+
+#Keep module docs up to date
+for i in $(find "${repo_root}" -name "README.md"); do
+    git add "$i"
+done
