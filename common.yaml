@@ -1,0 +1,15 @@
+---
+inputs:
+  # Prefix
+  name: "Sandbox_brk"
+
+  # Tags for all resources
+  tags:
+    t_dcl: "2"
+    t_AppID: "SVC007"
+    terraform: "true"
+
+  #Tags for ECR repository
+  ecr_tags:
+    t_application_vendor_domain: "allcloudops.com"
+    t_application_product: "Test application"
